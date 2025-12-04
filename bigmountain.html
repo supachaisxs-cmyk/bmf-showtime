@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Big Mountain 2025 — Showtime Selector</title>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+<style>
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #ff4da6;
+    color: #fff;
+}
+header {
+    background: #222;
+    padding: 16px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+}
+.container {
+    padding: 16px;
+}
+.day-selector {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.day-btn {
+    flex: 1;
+    padding: 12px;
+    background: #444;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+}
+.day-btn.active {
+    background: #ffb6e6;
+    color: #000;
+}
+.stage-block {
+    background: #fff;
+    color: #000;
+    padding: 14px;
+    margin-bottom: 16px;
+    border-radius: 12px;
+}
+.stage-name {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.artist-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.export-btn {
+    margin-top: 25px;
+    width: 100%;
+    padding: 14px;
+    background: #222;
+    color: #fff;
+    text-align: center;
+    border-radius: 10px;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<header>Big Mountain 2025 — Showtime Selector</header>
+
+<div class="container">
+
+    <div class="day-selector">
+        <div class="day-btn active" onclick="selectDay(1)">Day 1 — 6 Dec</div>
+        <div class="day-btn" onclick="selectDay(2)">Day 2 — 7 Dec</div>
+    </div>
+
+    <div id="show-container"></div>
+
+    <div class="export-btn" onclick="exportImage()">บันทึกเป็นภาพ</div>
+
+</div>
+
+<script>
+
+let currentDay = 1;
+
+const data = {
+    1: {
+        "Mountain Stage": [
+            "19:00 — Slot Machine",
+            "20:30 — Bodyslam",
+            "22:00 — Millin"
+        ],
+        "Cow Stage": [
+            "18:00 — Tattoo Colour",
+            "19:30 — Zom Marie",
+            "21:00 — Silly Fools"
+        ]
+    },
+
+    2: {
+        "Mountain Stage": [
+            "18:30 — Ink Warunthorn",
+            "20:00 — Tilly Birds",
+            "22:00 — Youngohm"
+        ],
+        "Cow Stage": [
+            "19:00 — Three Man Down",
+            "20:30 — Lipta",
+            "22:00 — 4EVE"
+        ]
+    }
+};
+
+
+function selectDay(day) {
+    currentDay = day;
+    let btns = document.querySelectorAll(".day-btn");
+    btns.forEach((b, i) => {
+        b.classList.toggle("active", i === day - 1);
+    });
+    render();
+}
+
+function render() {
+    const container = document.getElementById("show-container");
+    container.innerHTML = "";
+
+    const stages = data[currentDay];
+
+    for (const stage in stages) {
+        const block = document.createElement("div");
+        block.className = "stage-block";
+
+        block.innerHTML = `
+            <div class="stage-name">${stage}</div>
+            <div class="artist-list">
+                ${stages[stage].map(a => `<div>${a}</div>`).join("")}
+            </div>
+        `;
+        container.appendChild(block);
+    }
+}
+
+function exportImage() {
+    html2canvas(document.body).then(canvas => {
+        const link = document.createElement("a");
+        link.download = `BMMF2025_Day${currentDay}.png`;
+        link.href = canvas.toDataURL();
+        link.click();
+    });
+}
+
+render();
+
+</script>
+
+</body>
+</html>
